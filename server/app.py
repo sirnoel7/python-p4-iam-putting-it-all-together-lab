@@ -8,7 +8,6 @@ from werkzeug.exceptions import BadRequest
 from config import app, db, api
 from models import User, Recipe
 
-# Authorization middleware
 @app.before_request
 def authorize_user():
     if request.endpoint == "signup":
@@ -44,7 +43,7 @@ class Signup(Resource):
 
         except IntegrityError as e:
             db.session.rollback()
-            return {'error': 'Username already exists'}, 422
+            return {'error': 'Username already exists'}, 400  
         except BadRequest as e:
             return {'error': e.description}, 400
         except Exception as e:
@@ -100,8 +99,8 @@ class RecipeIndex(Resource):
         minutes_to_complete = data.get('minutes_to_complete')
         user_id = session.get('user_id')
 
-        if not (title and instructions):
-            raise BadRequest('Title and instructions are required')
+        if not (title and instructions and user_id):  
+            raise BadRequest('Title, instructions, and user_id are required')
 
         try:
             recipe = Recipe(

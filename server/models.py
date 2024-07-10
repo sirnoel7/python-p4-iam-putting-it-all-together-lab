@@ -42,7 +42,7 @@ class Recipe(db.Model):
     title = Column(String, nullable=False)
     instructions = Column(String, nullable=False)
     minutes_to_complete = Column(Integer)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     user = relationship('User', back_populates='recipes')
 
     @validates('instructions')
